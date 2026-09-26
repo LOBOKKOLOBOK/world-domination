@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МИРОВОЕ ГОСПОДСТВО — Настольная стратегия</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: #151c2c;
+            --panel-border: #233047;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Навигация и переключение ролей */
+        header {
+            background-color: #080b12;
+            padding: 12px 20px;
+            border-bottom: 2px solid var(--panel-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-red);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .role-btn {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .role-btn:hover, .role-btn.active {
+            color: var(--text-main);
+            border-color: var(--accent-blue);
+            background-color: #1e293b;
+        }
+
+        .role-btn.active {
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Главный контейнер */
+        main {
+            flex: 1;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Сетка стран */
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Панель фаз и таймера */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--accent-yellow);
+        }
+
+        .phase-indicator {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { opacity: 0.9; }
+        .btn-danger { background-color: var(--accent-red); }
+        .btn-success { background-color: var(--accent-green); }
+        .btn-warning { background-color: var(--accent-yellow); color: #000; }
+
+        /* Список городов и ресурсов */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .cities-list {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .city-item {
+            background: #0d1322;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #1a2538;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            background-color: #1e293b;
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent-blue);
+            background-color: #26334d;
+        }
+
+        /* Лог событий */
+        .log-container {
+            background-color: #080b12;
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 12px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            color: #d1d5db;
+        }
+
+        /* Схематичная карта */
+        .map-container {
+            background-color: #0d1322;
+            border: 1px solid var(--panel-border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .map-node {
+            background: var(--panel-bg);
+            border: 2px solid var(--panel-border);
+            padding: 15px;
+            border-radius: 50%;
+            width: 110px;
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        /* Переговорные комнаты */
+        .negotiations-list {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .negotiation-item {
+            background: #1a2538;
+            padding: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--panel-border);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            background: #0d1322;
+            border: 1px solid var(--panel-border);
+            color: white;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🌍 Мировое Господство</div>
+        <div class="role-selector" id="roleSelector">
+            <!-- Кнопки переключения ролей формируются динамически -->
+        </div>
+    </header>
+
+    <main>
+        <!-- Информационная панель (Фазы, Таймер) -->
+        <div class="status-bar">
+            <div>
+                <div class="phase-indicator" id="currentPhaseDisplay">Фаза: 🗣️ Дипломатия (Ход 1)</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);" id="phaseDescription">Свободные переговоры всех команд</div>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="timer-display" id="timerDisplay">05:00</div>
+                <div id="hostTimerControls" style="display: none; gap: 5px;">
+                    <button class="btn btn-success" onclick="startTimer()">▶</button>
+                    <button class="btn btn-warning" onclick="pauseTimer()">⏸</button>
+                    <button class="btn btn-danger" onclick="resetTimer()">↺</button>
+                </div>
+            </div>
+
+            <div id="hostPhaseControls" style="display: none;">
+                <button class="btn btn-success" onclick="nextPhase()">Следующая фаза ➔</button>
+            </div>
+        </div>
+
+        <!-- Карта мира (схематичная) -->
+        <div class="map-container" id="worldMap">
+            <!-- Динамические узлы стран на карте -->
+        </div>
+
+        <!-- Основной контент (Меняется в зависимости от выбранной роли) -->
+        <div id="mainContent"></div>
+
+        <!-- Переговоры -->
+        <div class="card" style="margin-top: 20px;">
+            <div class="card-header">
+                <div class="card-title">📞 Запросы на переговоры</div>
+            </div>
+            <div class="negotiations-list" id="negotiationsList">
+                <div style="color: var(--text-muted); font-size: 0.9rem;">Нет активных запросов.</div>
+            </div>
+        </div>
+
+        <!-- Журнал событий -->
+        <div class="log-container" id="eventLog">
+            <div class="log-entry">🟢 Игра начата. Ход 1.</div>
+        </div>
+    </main>
+
+    <!-- Модальное окно настроек ведущего -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h3>⚙️ Настройки баланса игры</h3>
+            <br>
+            <div class="form-group"><label>Стартовые деньги:</label><input type="number" id="cfg_startMoney"></div>
+            <div class="form-group"><label>Стартовые ресурсы:</label><input type="number" id="cfg_startResources"></div>
+            <div class="form-group"><label>Стоимость уровня экономики (деньги):</label><input type="number" id="cfg_ecoCost"></div>
+            <div class="form-group"><label>Доход за уровень экономики (+деньги/ход):</label><input type="number" id="cfg_ecoIncome"></div>
+            <div class="form-group"><label>Стоимость уровня экологии (деньги):</label><input type="number" id="cfg_ecoCostEcology"></div>
+            <div class="form-group"><label>Доход за уровень экологии (+ресурсы/ход):</label><input type="number" id="cfg_ecoIncomeResources"></div>
+            <div class="form-group"><label>Стоимость Ядерной Ракеты (Деньги / Ресурсы):</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="number" id="cfg_nukeMoney">
+                    <input type="number" id="cfg_nukeRes">
+                </div>
+            </div>
+            <div class="form-group"><label>Стоимость Ядерного Щита (Деньги / Ресурсы):</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="number" id="cfg_shieldMoney">
+                    <input type="number" id="cfg_shieldRes">
+                </div>
+            </div>
+            <br>
+            <div style="display: flex; justify-content: space-between;">
+                <button class="btn btn-success" onclick="saveSettings()">Сохранить</button>
+                <button class="btn btn-danger" onclick="closeSettings()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора цели для Ядерного Удара -->
+    <div class="modal" id="nukeModal">
+        <div class="modal-content">
+            <h3>🚀 Наведение Ядерной Ракеты</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Выберите цель для ракетного удара:</p>
+            <br>
+            <div class="form-group">
+                <label>Страна-цель:</label>
+                <select id="nukeTargetCountry" onchange="updateNukeTargetCities()" style="width:100%; padding:8px; background:#0d1322; color:white; border:1px solid var(--panel-border); border-radius:4px;"></select>
+            </div>
+            <div class="form-group">
+                <label>Город-цель:</label>
+                <select id="nukeTargetCity" style="width:100%; padding:8px; background:#0d1322; color:white; border:1px solid var(--panel-border); border-radius:4px;"></select>
+            </div>
+            <br>
+            <div style="display: flex; justify-content: space-between;">
+                <button class="btn btn-danger" onclick="confirmNukeLaunch()">🚀 ЗАПУСТИТЬ</button>
+                <button class="btn" onclick="closeNukeModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора города для Ядерного Щита -->
+    <div class="modal" id="shieldModal">
+        <div class="modal-content">
+            <h3>🛡️ Размещение Ядерного Щита</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Выберите город для защиты:</p>
+            <br>
+            <div class="form-group">
+                <label>Ваши города:</label>
+                <select id="shieldTargetCity" style="width:100%; padding:8px; background:#0d1322; color:white; border:1px solid var(--panel-border); border-radius:4px;"></select>
+            </div>
+            <br>
+            <div style="display: flex; justify-content: space-between;">
+                <button class="btn btn-success" onclick="confirmShieldBuild()">🔨 Начать строительство</button>
+                <button class="btn" onclick="closeShieldModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- ДЕФОЛТНЫЕ НАСТРОЙКИ (ЛЕГКО ИЗМЕНЯЕМЫЕ) ---
+        let CONFIG = {
+            startMoney: 800,
+            startResources: 600,
+            ecoCost: 100,
+            ecoIncome: 50,
+            ecoCostEcology: 100,
+            ecoIncomeResources: 40,
+            nukeMoney: 300,
+            nukeRes: 300,
+            shieldMoney: 180,
+            shieldRes: 180,
+            diplomacyTime: 300 // 5 минут
+        };
+
+        const PHASES = [
+            { id: 1, name: "🗣️ Дипломатия", desc: "Свободные переговоры всех команд (5 мин)" },
+            { id: 2, name: "💰 Экономика", desc: "Автоматическое начисление доходов и инвестиции" },
+            { id: 3, name: "📞 Переговоры", desc: "Приватные переговоры (1х1, 2х2)" },
+            { id: 4, name: "⚔️ Военная фаза", desc: "Фиксация военных маневров и обычных армий" },
+            { id: 5, name: "🎲 Тайные действия", desc: "Подача команд ведущему втайне от соперников" }
+        ];
+
+        // --- СОСТОЯНИЕ ИГРЫ ---
+        let gameState = {
+            turn: 1,
+            phaseIndex: 0,
+            activeRole: 'host', // 'host' или ID страны ('ru', 'de', 'ir', 'us')
+            countries: {
+                ru: {
+                    id: 'ru', name: 'Россия', flag: '🇷🇺',
+                    money: 800, resources: 600, eco: 1, ecology: 1, qualityOfLife: 100,
+                    nukesReady: 0, nukesBuilding: 0,
+                    cities: [
+                        { name: 'Москва', shield: false, shieldBuilding: false },
+                        { name: 'Санкт-Петербург', shield: false, shieldBuilding: false },
+                        { name: 'Новосибирск', shield: false, shieldBuilding: false },
+                        { name: 'Владивосток', shield: false, shieldBuilding: false }
+                    ],
+                    secretActions: []
+                },
+                de: {
+                    id: 'de', name: 'Германия', flag: '🇩🇪',
+                    money: 800, resources: 600, eco: 1, ecology: 1, qualityOfLife: 100,
+                    nukesReady: 0, nukesBuilding: 0,
+                    cities: [
+                        { name: 'Берлин', shield: false, shieldBuilding: false },
+                        { name: 'Гамбург', shield: false, shieldBuilding: false },
+                        { name: 'Мюнхен', shield: false, shieldBuilding: false },
+                        { name: 'Кёльн', shield: false, shieldBuilding: false }
+                    ],
+                    secretActions: []
+                },
+                ir: {
+                    id: 'ir', name: 'Иран', flag: '🇮🇷',
+                    money: 800, resources: 600, eco: 1, ecology: 1, qualityOfLife: 100,
+                    nukesReady: 0, nukesBuilding: 0,
+                    cities: [
+                        { name: 'Тегеран', shield: false, shieldBuilding: false },
+                        { name: 'Исфахан', shield: false, shieldBuilding: false },
+                        { name: 'Шираз', shield: false, shieldBuilding: false },
+                        { name: 'Мешхед', shield: false, shieldBuilding: false }
+                    ],
+                    secretActions: []
+                },
+                us: {
+                    id: 'us', name: 'США', flag: '🇺🇸',
+                    money: 800, resources: 600, eco: 1, ecology: 1, qualityOfLife: 100,
+                    nukesReady: 0, nukesBuilding: 0,
+                    cities: [
+                        { name: 'Вашингтон', shield: false, shieldBuilding: false },
+                        { name: 'Нью-Йорк', shield: false, shieldBuilding: false },
+                        { name: 'Чикаго', shield: false, shieldBuilding: false },
+                        { name: 'Лос-Анджелес', shield: false, shieldBuilding: false }
+                    ],
+                    secretActions: []
+                }
+            },
+            negotiations: [], // Запросы переговоров
+            logs: []
+        };
+
+        // --- ТАЙМЕР ---
+        let timerSeconds = CONFIG.diplomacyTime;
+        let timerInterval = null;
+
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        window.onload = function() {
+            loadGame();
+            renderRoleSelector();
+            updateUI();
+        };
+
+        function saveGame() {
+            localStorage.setItem('world_domination_save', JSON.stringify({ gameState, CONFIG }));
+        }
+
+        function loadGame() {
+            const save = localStorage.getItem('world_domination_save');
+            if (save) {
+                const parsed = JSON.parse(save);
+                gameState = parsed.gameState;
+                CONFIG = parsed.CONFIG || CONFIG;
+            } else {
+                logEvent("🟢 Графический прототип загружен. Игра готова.");
+            }
+        }
+
+        function resetGame() {
+            if (confirm("Вы уверены, что хотите сбросить всю игру до начального состояния?")) {
+                localStorage.removeItem('world_domination_save');
+                location.reload();
+            }
+        }
+
+        function logEvent(msg) {
+            const time = new Date().toLocaleTimeString();
+            const entry = `[Ход ${gameState.turn}] ${msg}`;
+            gameState.logs.unshift(entry);
+            const logEl = document.getElementById('eventLog');
+            if (logEl) {
+                logEl.innerHTML = gameState.logs.map(l => `<div class="log-entry">${l}</div>`).join('');
+            }
+            saveGame();
+        }
+
+        // --- УПРАВЛЕНИЕ РОЛЯМИ И ИНТЕРФЕЙСОМ ---
+        function renderRoleSelector() {
+            const container = document.getElementById('roleSelector');
+            const roles = [
+                { id: 'host', name: '👑 Ведущий' },
+                { id: 'ru', name: '🇷🇺 Россия' },
+                { id: 'de', name: '🇩🇪 Германия' },
+                { id: 'ir', name: '🇮🇷 Иран' },
+                { id: 'us', name: '🇺🇸 США' }
+            ];
+
+            container.innerHTML = roles.map(r => `
+                <button class="role-btn ${gameState.activeRole === r.id ? 'active' : ''}" 
+                        onclick="switchRole('${r.id}')">
+                    ${r.name}
+                </button>
+            `).join('');
+        }
+
+        function switchRole(roleId) {
+            gameState.activeRole = roleId;
+            renderRoleSelector();
+            updateUI();
+        }
+
+        function updateUI() {
+            // Элементы фазы и таймера
+            const phase = PHASES[gameState.phaseIndex];
+            document.getElementById('currentPhaseDisplay').innerText = `Фаза: ${phase.name} (Ход ${gameState.turn})`;
+            document.getElementById('phaseDescription').innerText = phase.desc;
+
+            // Видимость элементов ведущего
+            document.getElementById('hostTimerControls').style.display = gameState.activeRole === 'host' ? 'flex' : 'none';
+            document.getElementById('hostPhaseControls').style.display = gameState.activeRole === 'host' ? 'block' : 'none';
+
+            // Отрисовка карты
+            renderMap();
+
+            // Отрисовка основного экрана
+            const mainContent = document.getElementById('mainContent');
+            if (gameState.activeRole === 'host') {
+                mainContent.innerHTML = renderHostPanel();
+            } else {
+                mainContent.innerHTML = renderCountryPanel(gameState.activeRole);
+            }
+
+            // Отрисовка переговоров и лога
+            renderNegotiations();
+            document.getElementById('eventLog').innerHTML = gameState.logs.map(l => `<div class="log-entry">${l}</div>`).join('');
+
+            saveGame();
+        }
+
+        // --- ОТРИСОВКА КАРТЫ ---
+        function renderMap() {
+            const map = document.getElementById('worldMap');
+            map.innerHTML = Object.values(gameState.countries).map(c => `
+                <div class="map-node">
+                    <div style="font-size: 1.5rem;">${c.flag}</div>
+                    <div style="font-weight: bold; font-size:0.85rem; margin-top:2px;">${c.name}</div>
+                    <div style="font-size:0.7rem; color:var(--text-muted);">
+                        Городов: ${c.cities.filter(ct => ct.name).length}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- ПАНЕЛЬ ВЕДУЩЕГО ---
+        function renderHostPanel() {
+            return `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h2>Панель управления Ведущего</h2>
+                    <div>
+                        <button class="btn" onclick="openSettings()">⚙️ Настройки игры</button>
+                        <button class="btn btn-danger" onclick="resetGame()">↺ Сброс игры</button>
+                    </div>
+                </div>
+                <div class="countries-grid">
+                    ${Object.values(gameState.countries).map(c => `
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">${c.flag}${c.name}</div>
+                            </div>
+                            <div class="stat-row"><span>💰 Деньги:</span> <b>${c.money}</b></div>
+                            <div class="stat-row"><span>📦 Ресурсы:</span> <b>${c.resources}</b></div>
+                            <div class="stat-row"><span>🏭 Экономика:</span> <b>Ур. ${c.eco}</b></div>
+                            <div class="stat-row"><span>🌱 Экология:</span> <b>Ур. ${c.ecology}</b></div>
+                            <div class="stat-row"><span>❤️ Уровень жизни:</span> <b>${c.qualityOfLife}%</b></div>
+                            <div class="stat-row"><span>☢️ Ядерные ракеты:</span> <b>${c.nukesReady} (🔨 ${c.nukesBuilding})</b></div>
+                            
+                            <div style="margin-top:10px; font-weight:bold; font-size:0.85rem;">Города:</div>
+                            <div class="cities-list">
+                                ${c.cities.map(ct => `
+                                    <div class="city-item">
+                                        <span>🏙️ ${ct.name}</span>
+                                        <span>${ct.shield ? '🛡️' : (ct.shieldBuilding ? '🔨' : '')}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            ${c.secretActions.length > 0 ? `
+                                <div style="margin-top:12px; padding:8px; background:#261818; border:1px solid #5c2424; border-radius:6px;">
+                                    <div style="font-size:0.8rem; font-weight:bold; color:#ef4444;">🎲 Тайные действия на этот ход:</div>
+                                    <ul style="font-size:0.75rem; padding-left:15px; margin-top:4px;">
+                                        ${c.secretActions.map(a => `<li>${a}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // --- ПАНЕЛЬ КОМАНДЫ (ИГРОКА) ---
+        function renderCountryPanel(countryId) {
+            const c = gameState.countries[countryId];
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">${c.flag} Национальный Терминал: ${c.name}</div>
+                        <div style="color:var(--accent-yellow); font-size:0.85rem;">Засекречено</div>
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:15px;">
+                        <div>
+                            <div class="stat-row"><span>💰 Деньги:</span> <b>${c.money}</b></div>
+                            <div class="stat-row"><span>📦 Ресурсы:</span> <b>${c.resources}</b></div>
+                            <div class="stat-row"><span>🏭 Уровень экономики:</span> <b>${c.eco}</b></div>
+                        </div>
+                        <div>
+                            <div class="stat-row"><span>🌱 Уровень экологии:</span> <b>${c.ecology}</b></div>
+                            <div class="stat-row"><span>❤️ Уровень жизни:</span> <b>${c.qualityOfLife}%</b></div>
+                            <div class="stat-row"><span>☢️ Готовые ракеты:</span> <b>${c.nukesReady} (🔨 В производстве: ${c.nukesBuilding})</b></div>
+                        </div>
+                    </div>
+
+                    <div style="font-weight:bold; margin-bottom:8px;">Ваши Города:</div>
+                    <div class="cities-list" style="margin-bottom:20px;">
+                        ${c.cities.map(ct => `
+                            <div class="city-item">
+                                <span>🏙️ ${ct.name}</span>
+                                <span>${ct.shield ? '🛡️ Щит' : (ct.shieldBuilding ? '🔨 Строится щит' : '❌ Без защиты')}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div style="font-weight:bold; margin-bottom:8px;">Тайные Действия (Заявки на ход):</div>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="submitAction('${c.id}', 'Инвестиция в экономику', ${CONFIG.ecoCost}, 0, () => buildEco('${c.id}'))">
+                            <span>🏭 Инвестировать в экономику (+1 ур.)</span>
+                            <b>💰 ${CONFIG.ecoCost}</b>
+                        </button>
+                        <button class="action-btn" onclick="submitAction('${c.id}', 'Инвестиция в экологию', ${CONFIG.ecoCostEcology}, 0, () => buildEcology('${c.id}'))">
+                            <span>🌱 Инвестировать в экологию (+1 ур.)</span>
+                            <b>💰 ${CONFIG.ecoCostEcology}</b>
+                        </button>
+                        <button class="action-btn" onclick="submitAction('${c.id}', 'Производство Ядерной Ракеты', ${CONFIG.nukeMoney}, ${CONFIG.nukeRes}, () => buildNuke('${c.id}'))">
+                            <span>☢️ Создать Ядерную Ракету</span>
+                            <b>💰 ${CONFIG.nukeMoney} | 📦 ${CONFIG.nukeRes}</b>
+                        </button>
+                        <button class="action-btn" onclick="openShieldModal('${c.id}')">
+                            <span>🛡️ Создать Ядерный Щит</span>
+                            <b>💰 ${CONFIG.shieldMoney} | 📦 ${CONFIG.shieldRes}</b>
+                        </button>
+                        ${c.nukesReady > 0 ? `
+                            <button class="action-btn" style="border-color:var(--accent-red); background:#2d1515;" onclick="openNukeModal('${c.id}')">
+                                <span>🚀 ЗАПУСТИТЬ ЯДЕРНУЮ РАКЕТУ</span>
+                                <b style="color:var(--accent-red);">ГОТОВО: ${c.nukesReady}</b>
+                            </button>
+                        ` : ''}
+                        <button class="action-btn" onclick="requestNegotiation('${c.id}')">
+                            <span>📞 Запросить приватные переговоры</span>
+                            <b>Связь</b>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- ЛОГИКА ДЕЙСТВИЙ И ИГРОВЫЕ МЕХАНИКИ ---
+        function submitAction(countryId, actionName, costMoney, costRes, callback) {
+            const c = gameState.countries[countryId];
+            if (c.money < costMoney || c.resources < costRes) {
+                alert("Недостаточно ресурсов или денег для этого действия!");
+                return;
+            }
+            c.money -= costMoney;
+            c.resources -= costRes;
+            c.secretActions.push(actionName);
+            callback();
+            logEvent(`🎲 ${c.flag} ${c.name} подала тайную заявку: ${actionName}`);
+            updateUI();
+        }
+
+        function buildEco(countryId) {
+            gameState.countries[countryId].eco += 1;
+        }
+
+        function buildEcology(countryId) {
+            gameState.countries[countryId].ecology += 1;
+            gameState.countries[countryId].qualityOfLife += 5;
+        }
+
+        function buildNuke(countryId) {
+            gameState.countries[countryId].nukesBuilding += 1;
+        }
+
+        // --- ЯДЕРНЫЙ ЩИТ ---
+        let currentShieldCountry = null;
+        function openShieldModal(countryId) {
+            currentShieldCountry = countryId;
+            const c = gameState.countries[countryId];
+            const select = document.getElementById('shieldTargetCity');
+            select.innerHTML = c.cities.map((ct, idx) => `
+                <option value="${idx}" ${ct.shield || ct.shieldBuilding ? 'disabled' : ''}>
+                    ${ct.name} ${ct.shield ? '(Уже есть щит)' : (ct.shieldBuilding ? '(Строится)' : '')}
+                </option>
+            `).join('');
+            document.getElementById('shieldModal').style.display = 'flex';
+        }
+
+        function closeShieldModal() {
+            document.getElementById('shieldModal').style.display = 'none';
+        }
+
+        function confirmShieldBuild() {
+            const cityIdx = document.getElementById('shieldTargetCity').value;
+            if (cityIdx === null || cityIdx === "") return;
+            const c = gameState.countries[currentShieldCountry];
+
+            submitAction(c.id, `Строительство щита для г. ${c.cities[cityIdx].name}`, CONFIG.shieldMoney, CONFIG.shieldRes, () => {
+                c.cities[cityIdx].shieldBuilding = true;
+            });
+
+            closeShieldModal();
+        }
+
+        // --- ЯДЕРНАЯ АТАКА ---
+        let currentNukeCountry = null;
+        function openNukeModal(countryId) {
+            currentNukeCountry = countryId;
+            const selectCountry = document.getElementById('nukeTargetCountry');
+            selectCountry.innerHTML = Object.values(gameState.countries)
+                .filter(c => c.id !== countryId)
+                .map(c => `<option value="${c.id}">${c.flag} ${c.name}</option>`).join('');
+
+            updateNukeTargetCities();
+            document.getElementById('nukeModal').style.display = 'flex';
+        }
+
+        function updateNukeTargetCities() {
+            const targetCountryId = document.getElementById('nukeTargetCountry').value;
+            const c = gameState.countries[targetCountryId];
+            const selectCity = document.getElementById('nukeTargetCity');
+            selectCity.innerHTML = c.cities.map((ct, idx) => `<option value="${idx}">${ct.name}</option>`).join('');
+        }
+
+        function closeNukeModal() {
+            document.getElementById('nukeModal').style.display = 'none';
+        }
+
+        function confirmNukeLaunch() {
+            const attacker = gameState.countries[currentNukeCountry];
+            const targetCountryId = document.getElementById('nukeTargetCountry').value;
+            const targetCityIdx = document.getElementById('nukeTargetCity').value;
+            const defender = gameState.countries[targetCountryId];
+            const city = defender.cities[targetCityIdx];
+
+            if (attacker.nukesReady <= 0) return;
+
+            attacker.nukesReady -= 1;
+            attacker.secretActions.push(`Запуск ракеты по ${defender.name} (${city.name})`);
+
+            // Расчет перехвата/попадания
+            if (city.shield) {
+                city.shield = false; // Щит уничтожен
+                logEvent(`🛡️ ПЕРЕХВАТ! Ракета, запущенная по г. ${city.name} (${defender.name}), была перехвачена Ядерным Щитом! Щит и ракета уничтожены.`);
+            } else {
+                // Успешный удар
+                defender.money = Math.max(0, defender.money - 300);
+                defender.resources = Math.max(0, defender.resources - 200);
+                defender.qualityOfLife = Math.max(0, defender.qualityOfLife - 25);
+                logEvent(`☢️ ЯДЕРНЫЙ УДАР! Ракета поразила г. ${city.name} (${defender.name})! Нанесен колоссальный экономический ущерб.`);
+            }
+
+            closeNukeModal();
+            updateUI();
+        }
+
+        // --- ПЕРЕГОВОРЫ ---
+        function requestNegotiation(fromCountryId) {
+            const target = prompt("Укажите страну, с которой хотите связаться (Россия, Германия, Иран, США):");
+            if (target) {
+                const req = `${gameState.countries[fromCountryId].flag} ${gameState.countries[fromCountryId].name} ↔️ ${target}`;
+                gameState.negotiations.push(req);
+                logEvent(`📞 Запрошены переговоры: ${req}`);
+                updateUI();
+            }
+        }
+
+        function renderNegotiations() {
+            const container = document.getElementById('negotiationsList');
+            if (gameState.negotiations.length === 0) {
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.9rem;">Нет активных запросов.</div>`;
+                return;
+            }
+            container.innerHTML = gameState.negotiations.map((n, idx) => `
+                <div class="negotiation-item">
+                    <span>${n}</span>
+                    ${gameState.activeRole === 'host' ? `
+                        <button class="btn btn-danger" style="padding:2px 8px; font-size:0.75rem;" onclick="closeNegotiation(${idx})">Закрыть комнату</button>
+                    ` : '<span style="color:var(--accent-green); font-size:0.8rem;">Комната активна</span>'}
+                </div>
+            `).join('');
+        }
+
+        function closeNegotiation(idx) {
+            gameState.negotiations.splice(idx, 1);
+            updateUI();
+        }
+
+        // --- УПРАВЛЕНИЕ СМЕНОЙ ФАЗ И ХОДОВ ---
+        function nextPhase() {
+            gameState.phaseIndex++;
+            if (gameState.phaseIndex >= PHASES.length) {
+                gameState.phaseIndex = 0;
+                processNewTurn();
+            } else {
+                logEvent(`🔄 Переход к фазе: ${PHASES[gameState.phaseIndex].name}`);
+            }
+            resetTimer();
+            updateUI();
+        }
+
+        function processNewTurn() {
+            gameState.turn++;
+            logEvent(`🌍 НАЧАЛСЯ ХОД №${gameState.turn}`);
+
+            // Начисление ресурсов и завершение производства
+            Object.values(gameState.countries).forEach(c => {
+                // Доход от экономики и экологии
+                const incMoney = c.eco * CONFIG.ecoIncome;
+                const incRes = c.ecology * CONFIG.ecoIncomeResources;
+                c.money += incMoney;
+                c.resources += incRes;
+
+                // Завершение ракет
+                if (c.nukesBuilding > 0) {
+                    c.nukesReady += c.nukesBuilding;
+                    c.nukesBuilding = 0;
+                    logEvent(`☢️ ${c.flag} ${c.name}: Производство ядерных ракет завершено. В арсенале: ${c.nukesReady}`);
+                }
+
+                // Завершение щитов
+                c.cities.forEach(ct => {
+                    if (ct.shieldBuilding) {
+                        ct.shieldBuilding = false;
+                        ct.shield = true;
+                        logEvent(`🛡️ ${c.flag} ${c.name}: Ядерный щит над г. ${ct.name} успешно возведен!`);
+                    }
+                });
+
+                // Очистка тайных действий
+                c.secretActions = [];
+            });
+        }
+
+        // --- ТАЙМЕР ---
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const s = (timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+        }
+
+        function startTimer() {
+            if (timerInterval) return;
+            timerInterval = setInterval(() => {
+                if (timerSeconds > 0) {
+                    timerSeconds--;
+                    updateTimerDisplay();
+                } else {
+                    pauseTimer();
+                    alert("Время фазы истекло!");
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timerSeconds = CONFIG.diplomacyTime;
+            updateTimerDisplay();
+        }
+
+        // --- МОДАЛЬНОЕ ОКНО НАСТРОЕК ---
+        function openSettings() {
+            document.getElementById('cfg_startMoney').value = CONFIG.startMoney;
+            document.getElementById('cfg_startResources').value = CONFIG.startResources;
+            document.getElementById('cfg_ecoCost').value = CONFIG.ecoCost;
+            document.getElementById('cfg_ecoIncome').value = CONFIG.ecoIncome;
+            document.getElementById('cfg_ecoCostEcology').value = CONFIG.ecoCostEcology;
+            document.getElementById('cfg_ecoIncomeResources').value = CONFIG.ecoIncomeResources;
+            document.getElementById('cfg_nukeMoney').value = CONFIG.nukeMoney;
+            document.getElementById('cfg_nukeRes').value = CONFIG.nukeRes;
+            document.getElementById('cfg_shieldMoney').value = CONFIG.shieldMoney;
+            document.getElementById('cfg_shieldRes').value = CONFIG.shieldRes;
+
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function saveSettings() {
+            CONFIG.startMoney = parseInt(document.getElementById('cfg_startMoney').value);
+            CONFIG.startResources = parseInt(document.getElementById('cfg_startResources').value);
+            CONFIG.ecoCost = parseInt(document.getElementById('cfg_ecoCost').value);
+            CONFIG.ecoIncome = parseInt(document.getElementById('cfg_ecoIncome').value);
+            CONFIG.ecoCostEcology = parseInt(document.getElementById('cfg_ecoCostEcology').value);
+            CONFIG.ecoIncomeResources = parseInt(document.getElementById('cfg_ecoIncomeResources').value);
+            CONFIG.nukeMoney = parseInt(document.getElementById('cfg_nukeMoney').value);
+            CONFIG.nukeRes = parseInt(document.getElementById('cfg_nukeRes').value);
+            CONFIG.shieldMoney = parseInt(document.getElementById('cfg_shieldMoney').value);
+            CONFIG.shieldRes = parseInt(document.getElementById('cfg_shieldRes').value);
+
+            closeSettings();
+            logEvent("⚙️ Ведущий обновил настройки баланса.");
+            updateUI();
+        }
+    </script>
+</body>
+</html>
